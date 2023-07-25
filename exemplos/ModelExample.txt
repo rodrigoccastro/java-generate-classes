@@ -1,0 +1,63 @@
+package pulltabs.portal.Model;
+
+import javax.persistence.*;
+import java.sql.Timestamp;
+@Entity
+@Table(name="portal_role")
+public class ModelPortalRole {
+
+	@Id
+	private int id;
+
+	@Column(name="external_id", nullable=false, length=24)
+	private String external_id;
+
+	@Column(name="role_name", nullable=false, length=255)
+	private String role_name;
+
+	@Column(name="affiliation", nullable=true, length=255)
+	private String affiliation;
+
+	@Column(name="update_timestamp", nullable = false)
+	private Timestamp update_timestamp;
+
+	public int getId() { return id; }
+	public void setId(int id) { this.id = id; }
+
+	public String getExternalId() { return external_id; }
+	public void setExternalId(String external_id) {
+		this.external_id = external_id;
+	}
+
+	public String getRoleName() {
+		return role_name;
+	}
+
+	public void setRoleName(String role_name) {
+		this.role_name = role_name;
+	}
+
+	public String getAffiliation() {
+		return affiliation;
+	}
+
+	public void setAffiliation(String affiliation) {
+		this.affiliation = affiliation;
+	}
+
+	public Timestamp getUpdateTimestamp() {
+		return this.update_timestamp;
+	}
+
+	public void setUpdateTimestamp(Timestamp update_timestamp) { this.update_timestamp = update_timestamp; }
+
+	public String toString() {
+		String ret = "ModelPortalRole: { id: " + id + " ,";
+		ret += "{ external_id: " + (external_id==null ? "null" : "\"" + external_id.toString()) + "\" ,";
+		ret += "{ role_name: " + (role_name==null ? "null" : "\"" + role_name.toString()) + "\" ,";
+		ret += "{ affiliation: " + (affiliation==null ? "null" : "\"" + affiliation.toString()) + "\" ,";
+		ret += "{ update_timestamp: " + (update_timestamp==null ? "null" : "\"" + update_timestamp.toString()) + "\" }";
+		return ret;
+	}
+
+}

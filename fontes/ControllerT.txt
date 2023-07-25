@@ -1,0 +1,148 @@
+package pulltabs.portal.controller;
+
+import com.pilotgames.entity.portal.user.PortalUserEntity;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import pulltabs.portal.business.<model_name_lower>.Find<model_name>;
+import pulltabs.portal.business.<model_name_lower>.List<model_name>;
+import pulltabs.portal.business.<model_name_lower>.Save<model_name>;
+import pulltabs.portal.business.<model_name_lower>.UpdateStatus<model_name>;
+import pulltabs.portal.business.portalsystemlog.SavePortalSystemLog;
+import pulltabs.portal.business.portalsystemlog.UpdatePortalSystemLog;
+import pulltabs.portal.entity.portalsystemlog.PortalSystemLogRepository;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class <model_name>ControllerTest {
+
+    private <model_name>Controller controller;
+
+    @Autowired
+    private List<model_name> list<model_name>;
+    @Autowired
+    private UpdateStatus<model_name> updateStatus<model_name>;
+    @Autowired
+    private <model_name>Repository rep<model_name>;
+    @Autowired
+    private UpdatePortalSystemLog updatePortalSystemLog;
+    @Autowired
+    private PortalSystemLogRepository repPortalSystemLog;
+    @Autowired
+    private SavePortalSystemLog systemLog; // business para salvar o log
+
+    @Autowired
+    private Save<model_name> save<model_name>;
+    @Autowired
+    private Find<model_name> find<model_name>;
+
+    private <model_name>Controller getController() {
+        if (controller == null) {
+            controller = new <model_name>Controller(list<model_name>,delete<model_name>,
+                                                    save<model_name>,find<model_name>,
+                                                    rep<model_name>,updSystemLog,
+                                                    repPortalSystemLog);
+        }
+        return controller;
+    }
+
+    @Test
+    @Transactional
+    public void getList<model_name>s() throws Exception {
+        controller = getController();
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        assertEquals(controller.lit<model_name>s(request).toString(),
+                     new ResponseEntity<>(list<model_name>.execute(rep<model_name>), HttpStatus.OK).toString());
+    }
+
+    @Test
+    @Transactional
+    public void updateStatus() throws Exception {
+        controller = getController();
+
+        PortalUserEntity userLogado = Mockito.mock(PortalUserEntity.class);
+        HttpSession session = Mockito.mock(HttpSession.class);
+        Mockito.when(session.getAttribute("user")).thenReturn(userLogado);
+
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request.getRemoteAddr()).thenReturn("1.1.1.1");
+        Mockito.when(request.getSession()).thenReturn(session);
+
+        systemLog.execute(repPortalSystemLog, "1.1.1.1",1, "<model_name_lower>", "change status", null, null);
+
+        assertEquals(controller.updateStatus(request,"1", "ACTIVE"),
+                     new ResponseEntity<>("{ \"return\": true }", HttpStatus.OK));
+        assertEquals(controller.updateStatus(request,"1", "CLOSED"),
+                     new ResponseEntity<>("{ \"return\": true }", HttpStatus.OK));
+    }
+
+    @Test
+    @Transactional
+    public void saveIncluir<model_name>() {
+        controller = getController();
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        HttpSession session = Mockito.mock(HttpSession.class);
+        PortalUserEntity userLogado = Mockito.mock(PortalUserEntity.class);
+        Mockito.when(userLogado.getId()).thenReturn(1);
+        Mockito.when(session.getAttribute("user")).thenReturn(userLogado);
+        Mockito.when(request.getSession()).thenReturn(session);
+
+        <model_name>DTO objDTO = getDTO();
+        objDTO.setId(null);
+        String resultController = controller.save<model_name>(request, objDTO).toString();
+        assertEquals(resultController,new ResponseEntity<>("{ \"return\": true }", HttpStatus.OK).toString());
+
+        <model_name>Entity obj = rep<model_name>.findById(objDTO.getId()).get();
+        assertEquals(obj.getName(), objDTO.getName());
+    }
+
+    @Test
+    @Transactional
+    public void saveUpdate<model_name>() throws Exception {
+        controller = getController();
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        HttpSession session = Mockito.mock(HttpSession.class);
+        PortalUserEntity userLogado = Mockito.mock(PortalUserEntity.class);
+        Mockito.when(userLogado.getId()).thenReturn(1);
+        Mockito.when(session.getAttribute("user")).thenReturn(userLogado);
+        Mockito.when(request.getSession()).thenReturn(session);
+
+        <model_name>DTO objDTO = getDTO();
+        objDTO.setId(30);
+        objDTO.setName("123x");
+
+        String resultController = controller.save<model_name>(request, objDTO).toString();
+        boolean resultBusiness = save<model_name>.execute(userLogado.getId(),
+                                                          updatePortalSystemLog,
+                                                          repPortalSystemLog, rep<model_name>,
+                                                          objDTO);
+        assertEquals(resultController,new ResponseEntity<>("{ \"return\": "+resultBusiness+" }", HttpStatus.OK).toString());
+
+        <model_name>Entity obj = rep<model_name>.findById(objDTO.getId()).get();
+        assertEquals(obj.getName(), <model_name>DTO.getName());
+    }
+
+    private <model_name>DTO getDTO() {
+        <model_name>DTO obj = new <model_name>DTO();
+        <model_fields>
+
+        return obj;
+    }
+
+    @Test
+    @Transactional
+    public void find<model_name>() throws Exception {
+        controller = getController();
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+
+        String resultController = controller.Find<model_name>(request, "30").toString();
+        <model_name>DTO resultBusiness = find<model_name>.execute(rep<model_name>, 30);
+        assertEquals(resultController,new ResponseEntity<>(resultBusiness, HttpStatus.OK).toString());
+    }
+}

@@ -1,0 +1,25 @@
+package pulltabs.portal.Business.PortalRole;
+
+import pulltabs.portal.Model.PortalRoleEntity;
+import pulltabs.portal.Repository.PortalRoleRepository;
+
+import java.util.Optional;
+
+public class FindPortalRoleById {
+
+    private pulltabs.portal.Repository.PortalRoleRepository repPortalRole;
+
+    public FindPortalRoleById(PortalRoleRepository repPortalRole) {
+        this.repPortalRole = repPortalRole;
+    }
+
+    public PortalRoleEntity execute(int id) throws Exception {
+        Optional<PortalRoleEntity> portalRole = repPortalRole.findById(id);
+        if (!portalRole.isPresent()) {
+            return null;
+        } else {
+            return portalRole.get();
+        }
+    }
+
+}

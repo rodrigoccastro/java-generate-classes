@@ -1,0 +1,27 @@
+List <model_name>
+    method: GET
+    url: http://localhost:8080/<model_name_lower>
+
+Find <model_name>
+    method: GET
+    url: http://localhost:8080/<model_name_lower>/find?id=1
+
+Incluir <model_name>
+    method: POST
+    url: http://localhost:8080/<model_name_lower>/save"
+    contentType : 'application/json'
+    body:
+        {<model_fields>
+        }
+
+Update <model_name>
+    method: POST
+    url: http://localhost:8080/<model_name_lower>/save
+    contentType : 'application/json'
+    body:
+        {<model_fields>
+        }
+
+Delete <model_name>
+    method: GET
+    url: http://localhost:8080/<model_name_lower>/delete?id=9

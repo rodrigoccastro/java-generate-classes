@@ -1,0 +1,67 @@
+package pulltabs.portal.controller;
+
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import pulltabs.portal.business.portalrole.*;
+import pulltabs.portal.entity.portalrole.PortalRoleEntity;
+import pulltabs.portal.entity.portalrole.PortalRoleRepository;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@RestController
+public class ControllerPortalRole {
+
+	private final PortalRoleRepository repPortalRole;
+
+	public ControllerPortalRole(PortalRoleRepository repPortalRole) {
+		this.repPortalRole = repPortalRole;
+	}
+
+	@RequestMapping(value = "/portalRole", method = RequestMethod.GET)
+	public Object ListPortalRoles() {
+		try {
+			List<PortalRoleEntity> list = new ListPortalRole(repPortalRole).execute();
+			return new ResponseController().ResponseObject(list);
+		} catch(Exception e) {
+			return new ResponseController().ResponseError(this.getClass().getName(), "ListPortalRole", null, e);
+		}
+	}
+
+	@RequestMapping(value = "/portalRole/{id}", method = RequestMethod.GET)
+	public Object FindPortalRoleById(@PathVariable(value = "id") String id)
+	{
+		try {
+			PortalRoleEntity portalRole = new FindPortalRole(repPortalRole).execute(Integer.parseInt(id));
+			return new ResponseController().ResponseObject(portalRole);
+		} catch(Exception e) {
+			return new ResponseController().ResponseError(this.getClass().getName(), "FindPortalRole", null, e);
+		}
+	}
+
+	@RequestMapping(value = "/portalRole", method =  RequestMethod.POST)
+	public Object SavePortalRole(@Validated @RequestBody PortalRoleEntity portalRole)
+	{
+		try {
+			new SavePortalRole(repPortalRole).execute(portalRole);
+			return new ResponseController().ResponseBoolean(true);
+		} catch(Exception e) {
+			Map<String, String> params = new HashMap<>();
+			params.put("ModelPortalRole", portalRole.toString());
+			return new ResponseController().ResponseError(this.getClass().getName(),"SavePortalRole", params, e);
+		}
+	}
+
+	@RequestMapping(value = "/portalRole/{id}", method = RequestMethod.DELETE)
+	public Object DeletePortalRole(@PathVariable(value = "id") String id)
+	{
+		try {
+			new DeletePortalRole(repPortalRole).execute(Integer.parseInt(id));
+			return new ResponseController().ResponseBoolean(true);
+		} catch(Exception e) {
+			return new ResponseController().ResponseError(this.getClass().getName(),"DeletePortalRole", null, e);
+		}
+	}
+
+}

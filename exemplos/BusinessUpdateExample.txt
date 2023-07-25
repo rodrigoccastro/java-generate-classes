@@ -1,0 +1,40 @@
+package pulltabs.portal.Business.PortalRole;
+
+import pulltabs.portal.Model.PortalRoleEntity;
+import pulltabs.portal.Repository.PortalRoleRepository;
+
+import java.time.OffsetDateTime;
+
+public class UpdatePortalRole {
+
+    private PortalRoleRepository repPortalRole;
+    public UpdatePortalRole(PortalRoleRepository repPortalRole) {
+        this.repPortalRole = repPortalRole;
+    }
+
+    public boolean execute(int id, PortalRoleEntity newPortalRole) throws Exception {
+        if (invalidParams(newPortalRole)) {
+            return false;
+        } else {
+            if (!repPortalRole.existsById(id)) {
+                return false;
+            } else {
+                PortalRoleEntity portalRole = new FindPortalRoleById(repPortalRole).execute(id);
+                portalRole.setExternalId(newPortalRole.getExternalId());
+                portalRole.setRoleName(newPortalRole.getRoleName());
+                portalRole.setAffiliation(newPortalRole.getAffiliation());
+                portalRole.setUpdateTimestamp(OffsetDateTime.now());
+                repPortalRole.save(portalRole);
+                return true;
+            }
+        }
+    }
+
+    private boolean invalidParams(PortalRoleEntity portalRole) {
+        if (portalRole == null || portalRole.getId()==0 || portalRole.getExternalId().isEmpty() || portalRole.getRoleName().isEmpty() ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}

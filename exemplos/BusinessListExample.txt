@@ -1,0 +1,18 @@
+package pulltabs.portal.Business.PortalRole;
+
+import pulltabs.portal.Model.PortalRoleEntity;
+import pulltabs.portal.Repository.PortalRoleRepository;
+import java.util.List;
+
+public class ListPortalRoles {
+
+    private PortalRoleRepository repPortalRole;
+    public ListPortalRoles(PortalRoleRepository repPortalRole) {
+        this.repPortalRole = repPortalRole;
+    }
+
+    public List<PortalRoleEntity> execute() throws Exception {
+        return repPortalRole.findAll();
+    }
+
+}

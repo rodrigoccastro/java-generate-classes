@@ -1,0 +1,29 @@
+package pulltabs.portal.business.<model_name_lower>;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import pulltabs.portal.business.ApplicationBusiness;
+import pulltabs.portal.business.portalsystemlog.UpdatePortalSystemLog;
+import pulltabs.portal.entity.portalsystemlog.PortalSystemLogRepository;
+import java.util.Optional;
+
+@Component
+@Scope("singleton")
+public class Delete<model_name> extends ApplicationBusiness {
+
+    public boolean execute(Integer userId, UpdatePortalSystemLog busLog,
+                           PortalSystemLogRepository repLog, <model_name>Repository rep<model_name>,
+                           String id) throws Exception {
+
+        Optional<<model_name>Entity> objOpt = rep<model_name>.findById(Integer.parseInt(id));
+        if (objOpt.isEmpty()) { return false; }
+
+        <model_name>Entity obj = objOpt.get();
+        String oldInfo = obj.toString();
+        rep<model_name>.deleteById(obj.getId());
+
+        busLog.execute(repLog, userId, "<model_name_lower>", "deleted", "{ "+oldInfo+" }", "{}");
+        return true;
+    }
+
+}

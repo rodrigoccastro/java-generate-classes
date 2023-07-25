@@ -1,0 +1,16 @@
+package pulltabs.portal.Business.PortalRole;
+
+import pulltabs.portal.Repository.PortalRoleRepository;
+
+public class DeletePortalRole {
+    private PortalRoleRepository repPortalRole;
+
+    public DeletePortalRole(PortalRoleRepository repPortalRole) {
+        this.repPortalRole = repPortalRole;
+    }
+
+    public boolean execute(int id) throws Exception {
+        repPortalRole.deleteById(id);
+        return true;
+    }
+}

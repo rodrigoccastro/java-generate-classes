@@ -1,0 +1,22 @@
+package pulltabs.portal.entity.<model_name_lower>;
+
+import lombok.Getter;
+import lombok.Setter;
+import javax.persistence.*;
+import pulltabs.portal.entity.ApplicationEntity;
+
+@Getter
+@Setter
+@Entity
+@Table(name="<table_name>")
+public class <model_name>Entity extends ApplicationEntity {<model_fields>
+
+    public String toString() {
+        StringBuilder ret = new StringBuilder();
+        ret.append("{ ");
+        <model_to_string>
+        ret.append("}");
+        return ret.toString();
+    }
+
+}

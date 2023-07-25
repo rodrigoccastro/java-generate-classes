@@ -1,0 +1,23 @@
+package pulltabs.portal.business.<model_name_lower>;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import pulltabs.portal.business.ApplicationBusiness;
+import javax.persistence.Tuple;
+
+@Component
+@Scope("singleton")
+public class Find<model_name> extends ApplicationBusiness {
+
+    public <model_name>DTO execute(<model_name>Repository rep, String id) throws Exception {
+        Tuple tuple = rep.findDTOById(Integer.parseInt(id));
+        if (tuple == null) { return null; }
+        return getDTO(tuple);
+    }
+    
+    private <model_name>DTO getDTO(Tuple tuple) throws Exception {
+        <model_name>DTO objDTO = new <model_name>DTO();<model_fields>
+        return objDTO;
+    }
+
+}

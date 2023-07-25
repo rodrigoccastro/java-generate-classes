@@ -1,0 +1,30 @@
+package pulltabs.portal.business.<model_name_lower>;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import pulltabs.portal.business.ApplicationBusiness;
+
+import javax.persistence.Tuple;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@Component
+@Scope("singleton")
+public class List<model_name> extends ApplicationBusiness {
+
+    public List<<model_name>DTO> execute(<model_name>Repository rep) throws Exception {
+        return getListDTO(rep.findAll());
+    }
+
+    private List<<model_name>DTO> getListDTO(List<<model_name>Entity> listEntity) throws Exception {
+        List<<model_name>DTO> listDTO = new ArrayList<>();
+        for (<model_name>Entity entity : listEntity) { listDTO.add(getDTO(entity)); }
+        return listDTO;
+    }
+
+    private <model_name>DTO getDTO(<model_name>Entity entity) throws Exception {
+        <model_name>DTO objDTO = new <model_name>DTO();<model_fields>
+        return objDTO;
+    }
+}

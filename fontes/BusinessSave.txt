@@ -1,0 +1,87 @@
+package pulltabs.portal.business.<model_name_lower>;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.bson.types.ObjectId;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import pulltabs.portal.business.ApplicationBusiness;
+import pulltabs.portal.business.portalsystemlog.UpdatePortalSystemLog;
+import pulltabs.portal.entity.portalsystemlog.PortalSystemLogRepository;
+import java.util.ArrayList;
+
+@Component
+@Scope("singleton")
+public class Save<model_name> extends ApplicationBusiness {
+
+    @Transactional
+    public boolean execute(Integer userId, UpdatePortalSystemLog busLog,
+                           PortalSystemLogRepository repLog,<model_name>Repository rep<model_name>,
+                           <model_name>EntityListDTO <model_name_lower>) throws Exception {
+
+        boolean insert = <model_name_lower>.getId()==null ? true : false;
+        if (insert) {
+            return insert(userId, busLog, repLog, rep<model_name>, <model_name_lower>);
+        } else {
+            return update(userId, busLog, repLog, rep<model_name>, <model_name_lower>);
+        }
+    }
+
+    private boolean insert<model_name>(Integer userId, UpdatePortalSystemLog busLog,
+                                    PortalSystemLogRepository repLog, <model_name>Repository rep<model_name>,
+                                    <model_name>EntityDTO <model_name_lower>DTO) throws Exception {
+
+        Integer newId = rep<model_name>.getLastId();
+        newId = newId==null ? 1 : newId+1;
+
+        <model_name_lower>DTO.setId(newId);
+        <model_name_lower>DTO.setExternalId(new ObjectId().toHexString());
+        <model_name_lower>DTO.setUpdateTimestamp(java.time.OffsetDateTime.now());
+
+        <model_name>Entity <model_name_lower> = getEntity(<model_name_lower>DTO);
+        rep<model_name>.save(<model_name_lower>);
+
+        ObjectMapper mapper = JsonMapper.builder()
+                                        .addModule(new JavaTimeModule())
+                                        .build();
+
+        busLog.execute(repLog, userId, "<model_name_lower>", "updated",
+                       null, mapper.writeValueAsString(<model_name_lower>DTO));
+        return true;
+    }
+
+    private <model_name>Entity getEntity(<model_name>DTO objDTO) {
+        <model_name>Entity entity = new <model_name>Entity();<model_fields>
+        return entity;
+    }
+
+    private boolean update(Integer userId, UpdatePortalSystemLog busLog, PortalSystemLogRepository repLog,
+                                    <model_name>Repository rep<model_name>,
+                                    <model_name>DTO <model_name_lower>DTO) throws Exception {
+
+        Optional<<model_name>Entity> oldOpt = rep<model_name>.findById(<model_name_lower>DTO.getId());
+        if (oldOpt.isEmpty()) { return false; }
+
+        <model_name>Entity old = oldOpt.get();
+        String oldInfo = old.toString();
+
+        <model_name>Entity new<model_name> = getEntity(<model_name_lower>DTO);
+        new<model_name>.setExternalId(old.getExternalId());
+        new<model_name>.setUpdateTimestamp(java.time.OffsetDateTime.now());
+
+        rep<model_name>.save(new<model_name>);
+        <model_name_lower>DTO.setExternalId(old.getExternalId());
+
+        ObjectMapper mapper = JsonMapper.builder()
+                                        .addModule(new JavaTimeModule())
+                                        .build();
+
+        busLog.execute(repLog, userId, "<model_name_lower>", "updated",
+                       oldInfo, mapper.writeValueAsString(<model_name_lower>DTO));
+
+        return true;
+    }
+
+}

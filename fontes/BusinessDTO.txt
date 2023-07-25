@@ -1,0 +1,11 @@
+package pulltabs.portal.business.<model_name_lower>;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class <model_name>DTO {<model_fields>
+}
